@@ -1,4 +1,3 @@
-# $Id$
 # Contributor: dibblethewrecker <dibblethewrecker.at.jiwe.org>
 
 pkgname=gquilt
