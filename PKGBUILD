@@ -1,32 +1,33 @@
 # Contributor: dibblethewrecker <dibblethewrecker.at.jiwe.org>
 
 pkgname=gquilt
-pkgver=0.22
-pkgrel=2
+pkgver=0.24
+pkgrel=1
 pkgdesc='A PyGTK GUI wrapper for quilt'
-arch=('i686' 'x86_64')
-url='http://users.bigpond.net.au/Peter-Williams/'
+arch=('any')
+url='http://gquilt.sourceforge.net/'
 license=('GPL2')
 depends=('quilt' 'pygtk')
-source=("http://downloads.sourceforge.net/sourceforge/${pkgname}/${pkgname}-${pkgver}.tar.gz")
-md5sums=('a15ad1c38cd26feba6a6b025fc91b213')
+source=(
+  "http://downloads.sourceforge.net/sourceforge/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+  
+  # Tarball is missing gquilt.xpm and repository seems to be missing 0.24
+  # completely, so take it from 0.23
+  "http://${pkgname}.hg.sourceforge.net/hgweb/${pkgname}/${pkgname}/raw-file/RELEASE_0_23/gquilt.xpm"
+)
+md5sums=(
+  '7199e01eea24c9c52259df2e9d6299d9'
+  'ca932f2bca024a7a53b8105cf0509f94'
+)
 
 build() {
   cd ${pkgname}-${pkgver}
-
-  sed -i 's|PREFIX=/usr/local|PREFIX=/usr|g' Makefile
-
-  # Point Python scripts to the python2 binary
-  sed -i -e 's/env python/env python2/' \
-         -e 's/exec python/exec python2/' \
-         -e 's/python -/python2 -/' \
-    Makefile gquilt.sh {gquilt,compile}.py
-
-  make
+  cp ../gquilt.xpm .
 }
 
 package() {
   cd ${pkgname}-${pkgver}
 
-  make DESTDIR=${pkgdir} install
+  python2 setup.py install --root="${pkgdir}"
+  desktop-file-install gquilt.desktop --dir "${pkgdir}/usr/share/applications"
 }
